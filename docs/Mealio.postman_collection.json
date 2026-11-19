@@ -1,0 +1,224 @@
+{
+  "info": {
+    "name": "Mealio API",
+    "description": "Проверенные запросы Mealio к DummyJSON. Импортируйте коллекцию, выполните Auth / Login: тест сохранит accessToken в переменную token.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://dummyjson.com"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.collectionVariables.set('token', body.accessToken);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"emilys\",\n  \"password\": \"emilyspass\",\n  \"expiresInMins\": 60\n}"
+            },
+            "url": "{{baseUrl}}/auth/login",
+            "description": "Вход тестовым пользователем. Токен сохраняется в переменную token."
+          }
+        },
+        {
+          "name": "Current user",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/auth/me"
+          }
+        },
+        {
+          "name": "Current user — invalid token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer invalid-token"
+              }
+            ],
+            "url": "{{baseUrl}}/auth/me",
+            "description": "Ожидаемый ответ 401. Приложение очищает сессию и уводит на логин."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Recipes",
+      "item": [
+        {
+          "name": "All recipes",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/recipes?limit=0",
+            "description": "Все 50 рецептов для клиентской фильтрации."
+          }
+        },
+        {
+          "name": "Recipe by id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/recipes/1"
+          }
+        },
+        {
+          "name": "Search recipes",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/recipes/search?q=chicken&limit=0"
+          }
+        },
+        {
+          "name": "Recipe tags",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/recipes/tags"
+          }
+        },
+        {
+          "name": "Recipes by tag",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/recipes/tag/Italian?limit=0"
+          }
+        },
+        {
+          "name": "Create recipe",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tom yum with shrimp\",\n  \"ingredients\": [\"Shrimp\", \"Coconut milk\", \"Lemongrass\"],\n  \"instructions\": [\"Simmer the broth.\", \"Add shrimp and spices.\"],\n  \"prepTimeMinutes\": 15,\n  \"cookTimeMinutes\": 20,\n  \"servings\": 2,\n  \"difficulty\": \"Medium\",\n  \"cuisine\": \"Thai\",\n  \"caloriesPerServing\": 380,\n  \"tags\": [\"Thai\", \"Soup\"],\n  \"image\": \"https://cdn.dummyjson.com/recipe-images/1.webp\",\n  \"mealType\": [\"Dinner\"]\n}"
+            },
+            "url": "{{baseUrl}}/recipes/add",
+            "description": "201 с id 51. Сервер не сохраняет рецепт."
+          }
+        },
+        {
+          "name": "Update recipe",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Classic Margherita Pizza Updated\",\n  \"ingredients\": [\"Pizza dough\", \"Tomato sauce\"],\n  \"instructions\": [\"Roll the dough.\", \"Bake until golden.\"],\n  \"prepTimeMinutes\": 20,\n  \"cookTimeMinutes\": 15,\n  \"servings\": 4,\n  \"difficulty\": \"Easy\",\n  \"cuisine\": \"Italian\",\n  \"caloriesPerServing\": 300,\n  \"tags\": [\"Pizza\"],\n  \"image\": \"https://cdn.dummyjson.com/recipe-images/1.webp\",\n  \"mealType\": [\"Dinner\"]\n}"
+            },
+            "url": "{{baseUrl}}/recipes/1",
+            "description": "200 с изменённым объектом. Сервер не сохраняет изменения."
+          }
+        },
+        {
+          "name": "Rate recipe",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 4.7,\n  \"reviewCount\": 99\n}"
+            },
+            "url": "{{baseUrl}}/recipes/1",
+            "description": "200. Агрегированный рейтинг, не персональная оценка."
+          }
+        },
+        {
+          "name": "Update local recipe — expected 404",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Local recipe\"\n}"
+            },
+            "url": "{{baseUrl}}/recipes/1795086370477",
+            "description": "Ожидаемый 404: сервер не знает локально созданный id. Приложение в этом случае обновляет только кэш."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "User by id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/users/45",
+            "description": "Автор рецепта."
+          }
+        },
+        {
+          "name": "Register — simulated",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Alex\",\n  \"lastName\": \"Cook\",\n  \"email\": \"alex@example.com\",\n  \"username\": \"alexcook\",\n  \"password\": \"secret123\"\n}"
+            },
+            "url": "{{baseUrl}}/users/add",
+            "description": "201 с id 209. Пользователь не создаётся, пароль не сохраняется."
+          }
+        }
+      ]
+    }
+  ]
+}
