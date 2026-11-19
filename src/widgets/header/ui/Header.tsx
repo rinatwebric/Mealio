@@ -171,9 +171,14 @@ export function Header() {
         <Link
           to="/favorites"
           aria-label={`Избранное: ${favoriteCount}`}
-          className="ml-auto flex h-11 w-11 items-center justify-center rounded-control text-ink hover:bg-active"
+          className="relative ml-auto flex h-11 w-11 items-center justify-center rounded-control text-ink hover:bg-active"
         >
           <HeartIcon size={18} />
+          {favoriteCount > 0 ? (
+            <span className="absolute top-0.5 right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 font-mono text-[10px] leading-none text-white">
+              {favoriteCount}
+            </span>
+          ) : null}
         </Link>
       </header>
 
@@ -222,6 +227,8 @@ export function Header() {
 }
 
 export function TopBar() {
+  const favoriteCount = useFavoritesStore((state) => state.favoriteIds.length)
+
   return (
     <div className="hidden h-12 items-center gap-4 px-4 lg:flex">
       <div className="ml-auto w-full max-w-md">
@@ -229,10 +236,16 @@ export function TopBar() {
       </div>
       <Link
         to="/favorites"
+        aria-label={`Избранное: ${favoriteCount}`}
         className="flex h-9 items-center gap-2 rounded-control px-3 text-sm text-muted hover:bg-active hover:text-ink"
       >
         <HeartIcon size={16} />
         Избранное
+        {favoriteCount > 0 ? (
+          <span className="rounded-[4px] bg-surface px-1.5 py-0.5 font-mono text-xs text-muted">
+            {favoriteCount}
+          </span>
+        ) : null}
       </Link>
     </div>
   )

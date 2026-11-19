@@ -19,8 +19,10 @@ export function FavoriteButton({ recipeId, className, size = 18 }: FavoriteButto
       aria-label={isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
       onClick={() => toggleFavorite(recipeId)}
       className={cn(
-        'flex h-10 w-10 items-center justify-center rounded-full border border-line bg-surface/95 text-muted transition-colors hover:text-accent',
-        isFavorite && 'text-accent',
+        'flex h-10 w-10 items-center justify-center rounded-full border transition-colors',
+        isFavorite
+          ? 'border-accent/30 bg-accent-soft text-accent hover:bg-accent-soft'
+          : 'border-line bg-surface/95 text-muted hover:bg-surface hover:text-ink',
         className,
       )}
     >
