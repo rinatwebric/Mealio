@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --color-ground: #f3f5f0;
+  --color-surface: #ffffff;
+  --color-raised: #f7f8f6;
+  --color-active: #e9ede7;
+  --color-line: #e3e7e0;
+  --color-control: #c8cec5;
+  --color-ink: #131416;
+  --color-muted: #5d6460;
+  --color-accent: #1b6c80;
+  --color-accent-soft: #e7f1f3;
+  --color-danger: #c4242a;
+  --color-warning: #92400e;
+  --color-warning-soft: #fffbeb;
+  --color-success: #1e7b4f;
+
+  --radius-card: 8px;
+  --radius-control: 6px;
+  --radius-sheet: 16px;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ground font-sans text-ink antialiased;
+    margin: 0;
+    min-width: 320px;
+  }
+
+  ::selection {
+    background-color: var(--color-accent-soft);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@layer components {
+  .app-sheet {
+    @apply min-h-[calc(100dvh-56px)] border border-line bg-surface;
+    border-radius: var(--radius-sheet);
+  }
+
+  .page-wrap {
+    @apply mx-auto w-full max-w-[1180px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8;
+  }
+
+  .prose-measure {
+    max-width: 62ch;
+  }
+
+  .skip-link {
+    @apply sr-only;
+  }
+
+  .skip-link:focus {
+    @apply not-sr-only fixed top-2 left-2 z-50 rounded-control bg-ink px-4 py-2 text-sm text-white;
+  }
+
+  .rule {
+    @apply border-0 border-t border-line;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
